@@ -1,5 +1,8 @@
+/*import * as Sentry from "@sentry/angular";
+import { Integrations } from "@sentry/tracing";*/
+
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -11,6 +14,11 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
 import { VehicleServise } from './services/vehicle.service';
+import { AppErrorHandler } from './app.error-hendler';
+
+/*Sentry.init({
+  dsn: "https://7c228355b7de4f1a8fbe29e7b59b73ff@o455352.ingest.sentry.io/5446796",
+})*/
 
 @NgModule({
   declarations: [
@@ -30,9 +38,11 @@ import { VehicleServise } from './services/vehicle.service';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'vehicles/new', component: VehicleFormComponent },
+      { path: 'vehicles/:id', component: VehicleFormComponent },
     ])
   ],
   providers: [
+    //{ provide: ErrorHandler, useClass: AppErrorHandler },
     VehicleServise,
   ],
   bootstrap: [AppComponent]
