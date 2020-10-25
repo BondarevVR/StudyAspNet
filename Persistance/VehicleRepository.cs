@@ -1,8 +1,11 @@
-﻿using App.Models;
+﻿using App.Core.Models;
+using App.Extentions;
+using App.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace App.Persistance
@@ -27,6 +30,32 @@ namespace App.Persistance
                 .SingleOrDefaultAsync(v => v.ID == id);
         }
 
+        public async Task<QueryResoult<Vehicle>> GetVehicles(VehicleQuery queryObj) {
+            var resoult = new QueryResoult<Vehicle>();
+            
+            var query =  context.Vehicles
+                .Include(v => v.VehicleFeatures).ThenInclude(vf => vf.Feature)
+                .Include(v => v.Model).ThenInclude(m => m.Make)
+                .AsQueryable();
+
+            if (queryObj.MakeId.HasValue)
+                query = query.Where(v => v.Model.MakeID == queryObj.MakeId.Value);
+
+            var columnsMap = new Dictionary<string, Expression<Func<Vehicle, object>>>()
+            {
+                ["make"] = v => v.Model.Make.Name
+            };
+
+            query = query.ApplyOrdering(queryObj, columnsMap);
+
+            resoult.TotalItems = await query.CountAsync();
+            query = query.ApplyPaging(queryObj);
+
+            resoult.Items = await query.ToListAsync();
+
+            return resoult;
+        }
+        
         public void Add(Vehicle vehicle)
         {
             context.Vehicles.Add(vehicle);

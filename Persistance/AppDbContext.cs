@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using App.Models;
 using App.Features;
 using Microsoft.EntityFrameworkCore;
+using App.Core.Models;
 
 namespace App.Persistance
 {
@@ -14,6 +15,7 @@ namespace App.Persistance
         public DbSet<Model> Models { get; set; }
         public DbSet<Feature> Features { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Photo> Photos { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
             :base(options)
         {

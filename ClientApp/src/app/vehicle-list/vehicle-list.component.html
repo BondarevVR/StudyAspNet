@@ -1,0 +1,52 @@
+<h2>Vehicles</h2>
+
+<p>
+  <a [routerLink]="['new']" class="btn btn-primary">New Vehicle</a>
+</p>
+
+<div class="card bg-light" style="width: 18rem;">
+  <div class="card-body">
+
+    <h4 class="card-title">Filter</h4>
+
+    <div class="form-group">
+      <label for="make">Make</label>
+      <select id="make" class="form-control" [(ngModel)]="query.makeId" (change)="onFilterChange()">
+        <option selected></option>
+        <option *ngFor="let m of makes" value="{{ m.id }}">{{ m.name }}</option>
+      </select>
+    </div>
+
+    <button class="btn btn-default" (click)="resetFilter()">Reset</button>
+
+  </div>
+</div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th (click)="sortBy('make')">
+          Make
+          <i *ngIf="query.sortBy === 'make'"
+             class="fa"
+             [className]="query.isSortAssending ? 'fa-sort-asc' : 'fa-sort-desk'"></i>
+        </th>
+        <th>Model</th>
+        <th>Contact Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of queryResoult.items">
+        <td>{{ v.id }}</td>
+        <td>{{ v.make.name }}</td>
+        <td>{{ v.model.name }}</td>
+        <td>{{ v.contact.name }}</td>
+        <td>
+          <a [routerLink]="['/vehicles/', v.id]">View</a>
+        </td>
+    </tbody>
+  </table>
+
+<pagination [total-items]="queryResoult.totalItems" [page-size]="query.pageSize" (page-changed)="onPageChange($event)"></pagination>

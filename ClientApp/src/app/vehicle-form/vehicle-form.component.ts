@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { VehicleServise } from '../services/vehicle.service';
 import { forkJoin } from 'rxjs';
+import { saveVehicle } from "../models/saveVehicle";
+import { vehicle } from "../models/vehicle";
+import * as _ from "underscore"
 
 @Component({
   selector: 'app-vehicle-form',
@@ -14,9 +16,17 @@ export class VehicleFormComponent implements OnInit {
   makes: any[];
   models: any[];
   feachers: any[];
-  vehicle: any = {
+  vehicle: saveVehicle = {
+    id: 0,
+    makeId: 0,
+    modelId: 0,
+    isRegistered: false,
     features: [],
-    contact: {}
+    contact: {
+      name: '',
+      email: '',
+      phone: ''
+    }
   };
 
   constructor(
@@ -47,8 +57,10 @@ export class VehicleFormComponent implements OnInit {
       this.feachers = data[0];
       this.makes = data[1];
 
-      if (this.vehicle.id)
-        this.vehicle = data[2];
+      if (this.vehicle.id) {
+        this.setVehicle(data[2]);
+        this.populateModels();
+      }
     }, err => {
         if (err.status == 404) {
           this.router.navigate(['']);
@@ -56,10 +68,23 @@ export class VehicleFormComponent implements OnInit {
     })
   }
 
+  private setVehicle(v: vehicle) {
+      this.vehicle.id = v.id,
+      this.vehicle.makeId = v.make.id,
+      this.vehicle.modelId = v.model.id,
+      this.vehicle.isRegistered = v.isRegistered,
+      this.vehicle.contact = v.contact,
+      this.vehicle.features = _.pluck(v.features, 'id')
+  }
+
   onMakeChange() {
-    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeID);
+    this.populateModels();
+    delete this.vehicle.modelId;
+  }
+
+  private populateModels() {
+    var selectedMake = this.makes.find(m => m.id == this.vehicle.makeId);
     this.models = selectedMake ? selectedMake.models : [];
-    delete this.vehicle.modelID;
   }
 
   onFeatureToggle(featureId, $event) {
@@ -72,6 +97,24 @@ export class VehicleFormComponent implements OnInit {
   }
 
   submit() {
-    this.vehicleService.create(this.vehicle).subscribe(x => console.log(x));
+    var result$ = (this.vehicle.id) ? this.vehicleService.update(this.vehicle) : this.vehicleService.create(this.vehicle);
+    result$.subscribe(vehicle => {
+      console.log(vehicle);
+      this.router.navigate(['/vehicles/', this.vehicle.id]);
+    });
+
+    
+    /*if (this.vehicle.id) {
+      this.vehicleService.update(this.vehicle).subscribe(x => console.log(x));
+    }
+    this.vehicleService.create(this.vehicle).subscribe(x => console.log(x));*/
   }
+
+  /*delete() {
+    if (confirm("Are you shure?"))
+      this.vehicleService.delete(this.vehicle.id).subscribe(x => {
+        console.log("Deleted sucsesfully");
+        this.router.navigate(['']);
+      });
+  }*/
 }

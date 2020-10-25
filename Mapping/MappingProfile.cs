@@ -1,4 +1,5 @@
 ﻿using App.Controllers.Resourses;
+using App.Core.Models;
 using App.Features;
 using App.Models;
 using AutoMapper;
@@ -14,6 +15,8 @@ namespace App.Mapping
         public MappingProfile()
         {
             //Domain to Resource
+            CreateMap<Photo, PhotoResourse>();
+            CreateMap(typeof(QueryResoult<>), typeof(QueryResoultResourse<>));
             CreateMap<Make, MakeResourse>();
             CreateMap<Make, KeyValuePairResource>();
             CreateMap<Model, KeyValuePairResource>();
@@ -27,6 +30,7 @@ namespace App.Mapping
                 .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.VehicleFeatures.Select(vf => new KeyValuePairResource{ ID = vf.Feature.ID, Name = vf.Feature.Name})));
 
             //Resource to domain
+            CreateMap<VehicleQueryResource, VehicleQuery>();
             CreateMap<SaveVehicleResource, Vehicle>()
               .ForMember(v => v.ID, opt => opt.Ignore())
               .ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.Name))

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -18,9 +19,11 @@ namespace App.Models
         public bool IsRegistered { get; set; }
         public DateTime LastUpdate { get; set; }
         public ICollection<VehicleFeature> VehicleFeatures { get; set; }
+        public ICollection<Photo> Photos { get; set; }
         public Vehicle()
         {
             VehicleFeatures = new Collection<VehicleFeature>();
+            Photos = new Collection<Photo>();
         }
 
         //contacts

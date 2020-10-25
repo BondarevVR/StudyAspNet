@@ -1,4 +1,5 @@
 ﻿using App.Controllers.Resourses;
+using App.Core.Models;
 using App.Models;
 using App.Persistance;
 using AutoMapper;
@@ -93,6 +94,15 @@ namespace App.Controllers
 
             var vehicleResource = mapper.Map<Vehicle, VehicleResource>(vehicle);
             return Ok(vehicleResource);
+        }
+
+        [HttpGet("/api/vehicles")]
+        public async Task<QueryResoultResourse<VehicleResource>> GetVehicles(VehicleQueryResource queryResource) {
+            var query = mapper.Map<VehicleQueryResource, VehicleQuery>(queryResource);
+            var queryResoult = await repository.GetVehicles(query);
+
+            var vehicleResourse = mapper.Map<QueryResoult<Vehicle>, QueryResoultResourse<VehicleResource>>(queryResoult);
+            return vehicleResourse;
         }
     }
 }

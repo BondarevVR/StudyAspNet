@@ -57,10 +57,18 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\app.error-hendler.ts" />
+    <None Remove="ClientApp\src\app\models\Contact.ts" />
+    <None Remove="ClientApp\src\app\models\KeyValuePair.ts" />
+    <None Remove="ClientApp\src\app\models\saveVehicle.ts" />
+    <None Remove="ClientApp\src\app\models\vehicle.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\app.error-hendler.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\Shared\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
